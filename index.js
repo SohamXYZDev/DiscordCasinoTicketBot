@@ -16,6 +16,12 @@ client.once("ready", async () => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
+  // Handle support ticket button
+  if (interaction.isButton() && interaction.customId === 'create-support-ticket') {
+    const { handleSupportTicket } = require('./utils/ticketHandlers');
+    return handleSupportTicket(interaction);
+  }
+  
   // Handle main games panel dropdown
   if (interaction.isStringSelectMenu() && interaction.customId === 'games-panel-select') {
     const { handleDepositTicket, handleWithdrawTicket } = require('./utils/ticketHandlers');
