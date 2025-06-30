@@ -10,14 +10,14 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle("KingsBet - Support")
       .setDescription("Click on the button to create a support ticket")
-      .setColor(0x3498db)
+      .setColor(0x41fb2e)
       .setTimestamp();
 
     // Create the button
     const button = new ButtonBuilder()
       .setCustomId("create-support-ticket")
-      .setLabel("Create Support Ticket")
-      .setStyle(ButtonStyle.Primary)
+      .setLabel("Create Ticket")
+      .setStyle(ButtonStyle.Success)
       .setEmoji("🎫");
 
     const row = new ActionRowBuilder().addComponents(button);
