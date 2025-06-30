@@ -109,8 +109,57 @@ async function handleWithdrawTicket(interaction) {
   await channel.send({ content: `<@${user.id}>`, embeds: [embed] });
 }
 
+async function handleSupportTicket(interaction) {
+  const guild = interaction.guild;
+  const user = interaction.user;
+  
+  // Check for existing ticket
+  const existing = guild.channels.cache.find(
+    c => c.name.startsWith("support-") && c.topic === `Support ticket for ${user.id}`
+  );
+  if (existing) {
+    return interaction.reply({ content: `🚫 You already have a support ticket: <#${existing.id}>`, ephemeral: true });
+  }
+  
+  // Find next ticket number
+  const ticketCount = guild.channels.cache.filter(c => c.name.startsWith("support-")).size + 1;
+  const channelName = `support-${ticketCount.toString().padStart(4, "0")}`;
+  
+  // Create private channel
+  const channel = await guild.channels.create({
+    name: channelName,
+    type: ChannelType.GuildText,
+    topic: `Support ticket for ${user.id}`,
+    permissionOverwrites: [
+      { id: guild.roles.everyone, deny: [PermissionFlagsBits.ViewChannel] },
+      { id: user.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] },
+      { id: interaction.client.user.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageChannels] },
+    ],
+  });
+  
+  // Ephemeral reply with channel link
+  await interaction.reply({ content: `✅ Your support ticket has been created at <#${channel.id}>`, ephemeral: true });
+  
+  // Welcome message in the ticket channel
+  const embed = new EmbedBuilder()
+    .setTitle("Support Ticket")
+    .setDescription(
+      `Hello <@${user.id}>! 👋\n\n` +
+      `Thank you for contacting our support team. Please describe your issue or question in detail, and our staff will assist you as soon as possible.\n\n` +
+      `**Please include:**\n` +
+      `• A clear description of your issue\n` +
+      `• Any relevant screenshots or transaction IDs\n` +
+      `• Steps you've already tried (if applicable)`
+    )
+    .setColor(0x3498db)
+    .setFooter({ text: "Our support team will respond shortly" });
+    
+  await channel.send({ content: `<@${user.id}>`, embeds: [embed] });
+}
+
 module.exports = {
   handleDepositTicket,
   handleWithdrawTicket,
+  handleSupportTicket,
   CRYPTO_OPTIONS
 };
