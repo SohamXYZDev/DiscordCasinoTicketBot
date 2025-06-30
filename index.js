@@ -30,14 +30,34 @@ client.on(Events.InteractionCreate, async (interaction) => {
   
   // Handle select menu for deposit crypto selection
   if (interaction.isStringSelectMenu() && interaction.customId === 'deposit-crypto-select') {
-    const depositCmd = require('./commands/deposit.js');
-    return depositCmd.handleComponent(interaction);
+    const { CRYPTO_OPTIONS } = require('./utils/ticketHandlers');
+    const selected = interaction.values[0];
+    const crypto = CRYPTO_OPTIONS.find(opt => opt.value === selected);
+    
+    if (!crypto) {
+      return interaction.reply({ content: "Unknown crypto.", ephemeral: true });
+    }
+    
+    await interaction.reply({ 
+      content: `**${crypto.label} ADDRESS:**\n\n\`\`\`\n${crypto.address}\n\`\`\`\n\n**➡️ After sending your crypto, send the transaction link here. An admin will verify it and update your balance shortly.**` 
+    });
+    return;
   }
   
   // Handle select menu for withdraw crypto selection
   if (interaction.isStringSelectMenu() && interaction.customId === 'withdraw-crypto-select') {
-    const withdrawCmd = require('./commands/withdraw.js');
-    return withdrawCmd.handleComponent(interaction);
+    const { CRYPTO_OPTIONS } = require('./utils/ticketHandlers');
+    const selected = interaction.values[0];
+    const crypto = CRYPTO_OPTIONS.find(opt => opt.value === selected);
+    
+    if (!crypto) {
+      return interaction.reply({ content: "Unknown crypto.", ephemeral: true });
+    }
+    
+    await interaction.reply({ 
+      content: `You selected **${crypto.label}** for your withdrawal. Please wait for an admin to process your request.` 
+    });
+    return;
   }
   
   if (interaction.isStringSelectMenu() && interaction.customId === 'help-category-select') {
