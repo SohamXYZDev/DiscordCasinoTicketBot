@@ -15,7 +15,6 @@ module.exports = {
         "**Minimum withdraw:** $25"
       )
       .setColor(0x41fb2e)
-      .setTimestamp();
 
     // Create the dropdown menu
     const selectMenu = new StringSelectMenuBuilder()

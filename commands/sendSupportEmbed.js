@@ -11,7 +11,6 @@ module.exports = {
       .setTitle("KingsBet - Support")
       .setDescription("Click on the button to create a support ticket")
       .setColor(0x41fb2e)
-      .setTimestamp();
 
     // Create the button
     const button = new ButtonBuilder()
